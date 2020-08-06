@@ -1,4 +1,4 @@
-# import os
+import os
 import jsonpath
 import openpyxl
 import requests
@@ -7,29 +7,33 @@ exl = 'test_case_api.xlsx'
 
 
 def excel_master_data(excel_name, sheet_name):
-    test_excel = openpyxl.load_workbook(excel_name)     # 加载Excel工作簿
-    sheet = test_excel[sheet_name]
-    list1 = []
-    max_row = sheet.max_row
-    for i in range(2, max_row + 1, 1):
-        dict1 = dict(case_id=sheet.cell(row=i, column=1).value,    # 取出用例编号
-                     interface=sheet.cell(row=i, column=2).value,  # 取出接口名
-                     method=sheet.cell(row=i, column=4).value,     # 取出请求方式：post/get/patch
-                     url=sheet.cell(row=i, column=5).value,        # 取出接口地址
-                     data=sheet.cell(row=i, column=6).value,       # 取出请求体数据
-                     xpected=sheet.cell(row=i, column=7).value    # 取出预期结果
-                    )
-        list1.append(dict1)   # 将上面的数据存到列表里
-    return list1              # 返回数据
+    if os.path.exists(excel_name):
+        test_excel = openpyxl.load_workbook(excel_name)
+        sheet = test_excel[sheet_name]
+        list1 = []
+        max_row = sheet.max_row
+        for i in range(2, max_row + 1, 1):
+            dict1 = dict(
+                case_id=sheet.cell(row=i, column=1).value,
+                interface=sheet.cell(row=i, column=2).value,
+                method=sheet.cell(row=i, column=4).value,
+                url=sheet.cell(row=i, column=5).value,
+                data=sheet.cell(row=i, column=6).value,
+                expected=sheet.cell(row=i, column=7).value
+            )
+            list1.append(dict1)
+        return list1
+    else:
+        return '文件不存在'
 
 
-
-def write_result(exl_name, sheetname, row, column, final_result):
+def update_excel_expected(exl_name, exl_sheet_name, value, value2, update_name):
     test_excle = openpyxl.load_workbook(exl_name)
-    sheet = test_excle[sheetname]
-    sheet.cell(row=row, column=column).value = final_result      # # 将单元格的值赋给final_result
+    sheet = test_excle[exl_sheet_name]
+    result = sheet.cell(row=value, column=value2)
+    result.value = update_name
     test_excle.save(exl_name)
-    return final_result
+    return update_name
 
 
 def public_post_no_token_head(method, body, url, head={"X-Lemonban-Media-Type": "lemonban.v2",
