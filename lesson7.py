@@ -104,7 +104,7 @@ login0_body = {
 # 登录-----------------------------------------
 # print(automatic(exl, 'login'))
 # 充值-----------------------------------------
-# print(automatic(exl, 'recharge', login_body))
+print(automatic(exl, 'recharge', login_body))
 # 加标-----------------------------------------
 # print(automatic(exl, 'loan_add', login_body))
 # 审核-----------------------------------------
